@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sydney Live Clock</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+        }
+        .clock-container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4ecdc4;
+        }
+        .clock {
+            font-size: 4rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+        }
+        .date {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            color: #a0a0a0;
+        }
+        .timezone {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <h1>🕐 Sydney, Australia</h1>
+        <div class="clock" id="clock">--:--:--</div>
+        <div class="date" id="date">Loading...</div>
+        <div class="timezone">AEST (UTC+10)</div>
+    </div>
+
+    <script>
+        function updateClock() {
+            // Sydney timezone: AEST = UTC+10
+            const sydneyTime = new Date().toLocaleString('en-AU', {
+                timeZone: 'Australia/Sydney',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const [weekday, date] = sydneyTime.split(', ');
+            const [time] = date.split(', ');
+
+            document.getElementById('clock').textContent = time;
+            document.getElementById('date').textContent = `${weekday}, ${date.split(', ').slice(1).join(', ')}`;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>

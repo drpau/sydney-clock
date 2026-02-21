@@ -57,23 +57,28 @@
     <script>
         function updateClock() {
             // Sydney timezone: AEST = UTC+10
-            const sydneyTime = new Date().toLocaleString('en-AU', {
+            const now = new Date();
+            
+            // Get time in Sydney (AEST)
+            const sydneyTime = now.toLocaleString('en-AU', {
                 timeZone: 'Australia/Sydney',
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
-                hour12: false,
+                hour12: false
+            });
+            
+            // Get date in Sydney
+            const sydneyDate = now.toLocaleString('en-AU', {
+                timeZone: 'Australia/Sydney',
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
 
-            const [weekday, date] = sydneyTime.split(', ');
-            const [time] = date.split(', ');
-
-            document.getElementById('clock').textContent = time;
-            document.getElementById('date').textContent = `${weekday}, ${date.split(', ').slice(1).join(', ')}`;
+            document.getElementById('clock').textContent = sydneyTime;
+            document.getElementById('date').textContent = sydneyDate;
         }
 
         updateClock();

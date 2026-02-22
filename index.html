@@ -92,6 +92,60 @@
         .theme-toggle:hover {
             transform: scale(1.1);
         }
+        .calendar {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .calendar-title {
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .calendar-nav {
+            background: var(--container-bg);
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--container-bg);
+            padding: 0.5rem;
+            border-radius: 10px;
+        }
+        .calendar-day-header {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            padding: 0.3rem;
+            text-align: center;
+        }
+        .calendar-day {
+            font-size: 0.75rem;
+            padding: 0.4rem;
+            text-align: center;
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+        .calendar-day.today {
+            background: var(--accent);
+            color: var(--bg-gradient-start);
+            font-weight: bold;
+        }
+        .calendar-day.other-month {
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
@@ -101,6 +155,14 @@
         <div class="clock" id="clock">--:--:--</div>
         <div class="date" id="date">Loading...</div>
         <div class="timezone">AEST (UTC+10)</div>
+    </div>
+    <div class="calendar">
+        <div class="calendar-header">
+            <button class="calendar-nav" id="prevMonth">&lt;</button>
+            <span class="calendar-title" id="calendarTitle"></span>
+            <button class="calendar-nav" id="nextMonth">&gt;</button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
     <script>
@@ -148,6 +210,72 @@
 
         updateClock();
         setInterval(updateClock, 1000);
+
+        // Calendar
+        const calendarTitle = document.getElementById('calendarTitle');
+        const calendarGrid = document.getElementById('calendarGrid');
+        const prevMonthBtn = document.getElementById('prevMonth');
+        const nextMonthBtn = document.getElementById('nextMonth');
+
+        let currentCalendarDate = new Date();
+
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            // Get month name
+            const monthName = new Date(year, month).toLocaleString('en-AU', { month: 'long' });
+            calendarTitle.textContent = `${monthName} ${year}`;
+
+            // Day headers
+            const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            let html = days.map(d => `<div class="calendar-day-header">${d}</div>`).join('');
+
+            // Get first day of month and total days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+            // Get today's date in Sydney timezone
+            const now = new Date();
+            const sydneyToday = new Date(now.toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }));
+            const today = sydneyToday.getDate();
+            const thisMonth = sydneyToday.getMonth();
+            const thisYear = sydneyToday.getFullYear();
+
+            // Previous month days
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                html += `<div class="calendar-day other-month">${day}</div>`;
+            }
+
+            // Current month days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = (day === today && month === thisMonth && year === thisYear);
+                html += `<div class="calendar-day${isToday ? ' today' : ''}">${day}</div>`;
+            }
+
+            // Next month days to fill grid
+            const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+            const remainingCells = totalCells - (firstDay + daysInMonth);
+            for (let day = 1; day <= remainingCells; day++) {
+                html += `<div class="calendar-day other-month">${day}</div>`;
+            }
+
+            calendarGrid.innerHTML = html;
+        }
+
+        prevMonthBtn.addEventListener('click', () => {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar();
+        });
+
+        nextMonthBtn.addEventListener('click', () => {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        renderCalendar();
     </script>
 </body>
 </html>

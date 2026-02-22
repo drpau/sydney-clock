@@ -30,6 +30,7 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -38,6 +39,48 @@
             color: var(--text-primary);
             transition: background 0.3s ease, color 0.3s ease;
         }
+        
+        /* Carousel Styles */
+        .carousel {
+            width: 100%;
+            max-width: 600px;
+            height: 150px;
+            margin: 1rem 0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+        
+        .carousel-top {
+            margin-bottom: 0;
+        }
+        
+        .carousel-bottom {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
         .clock-container {
             text-align: center;
             padding: 2rem;
@@ -46,6 +89,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px var(--shadow);
             transition: background 0.3s ease, box-shadow 0.3s ease;
+            margin: 1rem 0;
         }
         h1 {
             font-size: 1.5rem;
@@ -96,11 +140,30 @@
 </head>
 <body>
     <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">🌙</button>
+    
+    <!-- Sydney Carousel (Top) -->
+    <div class="carousel carousel-top" id="sydneyCarousel">
+        <div class="carousel-slide active"><img src="https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=600&h=300&fit=crop" alt="Sydney Opera House"></div>
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1524293581917-878a6d017c71?w=600&h=300&fit=crop" alt="Sydney Harbour Bridge"></div>
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=600&h=300&fit=crop" alt="Sydney CBD"></div>
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1589952283368-767c664556a4?w=600&h=300&fit=crop" alt="Bondi Beach"></div>
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&h=300&fit=crop" alt="Sydney Night View"></div>
+    </div>
+    
     <div class="clock-container">
         <h1>🕐 Sydney, Australia</h1>
         <div class="clock" id="clock">--:--:--</div>
         <div class="date" id="date">Loading...</div>
         <div class="timezone">AEST (UTC+10)</div>
+    </div>
+    
+    <!-- Dachshund Carousel (Bottom) -->
+    <div class="carousel carousel-bottom" id="dachshundCarousel">
+        <div class="carousel-slide active"><img src="https://images.unsplash.com/photo-1612195583950-b8fd34c87093?w=600&h=300&fit=crop" alt="Dachshund 1"></div>
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=600&h=300&fit=crop" alt="Dachshund 2"></div>
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=600&h=300&fit=crop" alt="Dachshund 3"></div>
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=600&h=300&fit=crop" alt="Dachshund 4"></div>
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1560807707-8cc77767d783?w=600&h=300&fit=crop" alt="Dachshund 5"></div>
     </div>
 
     <script>
@@ -148,6 +211,23 @@
 
         updateClock();
         setInterval(updateClock, 1000);
+        
+        // Carousel rotation
+        function rotateCarousel(carouselId, interval) {
+            const carousel = document.getElementById(carouselId);
+            const slides = carousel.querySelectorAll('.carousel-slide');
+            let currentSlide = 0;
+            
+            setInterval(() => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }, interval);
+        }
+        
+        // Start carousels (rotate every 4 seconds)
+        rotateCarousel('sydneyCarousel', 4000);
+        rotateCarousel('dachshundCarousel', 4000);
     </script>
 </body>
 </html>
